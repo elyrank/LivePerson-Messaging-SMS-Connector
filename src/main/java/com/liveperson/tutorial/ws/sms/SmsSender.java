@@ -11,7 +11,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.websocket.DecodeException;
@@ -78,16 +77,16 @@ public class SmsSender {
     public JsonNode postObject(String url, String message, String from, String to) {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         try {
-            map.add("From", URLEncoder.encode(from, "UTF-8"));
-            map.add("To", URLEncoder.encode(to, "UTF-8"));
-            map.add("Body", URLEncoder.encode(message, "UTF-8"));
+            map.add("From", from);
+            map.add("To", to);
+            map.add("Body", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
             headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
             headers.add(HttpHeaders.AUTHORIZATION, "Basic " + getAuthorizationToken("jean.deruelle@gmail.com", "restcomm2016"));
             final ResponseEntity<JsonNode> exchange = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(map, headers), JsonNode.class);
-             logger.info("sent SMS {}", map);
-             logger.info("SMS response {}", exchange.getBody());
+            logger.info("sent SMS {}", map);
+            logger.info("SMS response {}", exchange.getBody());
             return exchange.getBody();
         } catch (Exception e) {
             logger.error("failed to send sms: ", e);
