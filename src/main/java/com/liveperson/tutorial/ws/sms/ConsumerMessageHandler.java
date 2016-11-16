@@ -111,6 +111,7 @@ public class ConsumerMessageHandler implements JsonMessageHandler {
                     }
                 } else if (type.equals("DELETE")) {
                     conversations.remove(convId);
+                    smsConsumer.setConvId(null);
                 }
 
             }
